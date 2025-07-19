@@ -13,15 +13,15 @@ from config import (
     RESTRICT,
     START_MESSAGE,
 )
-from database.mongo import add_served_user, get_served_users
+from database.mongo import add_served_user, get_served_users, remove_served_user
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked
 from pyrogram.types import InlineKeyboardMarkup, Message
 
-from helper_func import(
+from helper_func import (
     decode,
-    get_messages, 
+    get_messages,
     subs,
     sub1,
     sub2,
@@ -55,46 +55,33 @@ async def _human_time_duration(seconds):
 
 @Bot.on_message(filters.command("start") & filters.private & subs & sub1 & sub2 & sub3 & sub4)
 async def start_command(client: Bot, message: Message):
-    id = message.from_user.id
-    user_name = (
-        f"@{message.from_user.username}"
-        if message.from_user.username
-        else None
-    )
+    user_id = message.from_user.id
 
     try:
-        await add_served_user(id)
+        await add_served_user(user_id)
     except:
         pass
-    text = message.text
-    if len(text) > 7:
+
+    if len(message.text) > 7:
         try:
-            base64_string = text.split(" ", 1)[1]
+            base64_string = message.text.split(" ", 1)[1]
+            string = await decode(base64_string)
+            argument = string.split("-")
         except BaseException:
             return
-        string = await decode(base64_string)
-        argument = string.split("-")
-        if len(argument) == 3:
-            try:
+
+        try:
+            if len(argument) == 3:
                 start = int(int(argument[1]) / abs(client.db_channel.id))
                 end = int(int(argument[2]) / abs(client.db_channel.id))
-            except BaseException:
-                return
-            if start <= end:
-                ids = range(start, end + 1)
+                ids = list(range(start, end + 1)) if start <= end else list(range(start, end - 1, -1))
+            elif len(argument) == 2:
+                ids = [int(int(argument[1]) / abs(client.db_channel.id))]
             else:
                 ids = []
-                i = start
-                while True:
-                    ids.append(i)
-                    i -= 1
-                    if i < end:
-                        break
-        elif len(argument) == 2:
-            try:
-                ids = [int(int(argument[1]) / abs(client.db_channel.id))]
-            except BaseException:
-                return
+        except BaseException:
+            return
+
         temp_msg = await message.reply("Sedang diproses...")
         try:
             messages = await get_messages(client, ids)
@@ -104,20 +91,16 @@ async def start_command(client: Bot, message: Message):
         await temp_msg.delete()
 
         for msg in messages:
-
-            if bool(CUSTOM_CAPTION) & bool(msg.document):
-                caption = CUSTOM_CAPTION.format(
-                    previouscaption=msg.caption.html if msg.caption else "",
-                    filename=msg.document.file_name,
-                )
-
-            else:
-                caption = msg.caption.html if msg.caption else ""
+            caption = CUSTOM_CAPTION.format(
+                previouscaption=msg.caption.html if msg.caption else "",
+                filename=msg.document.file_name,
+            ) if CUSTOM_CAPTION and msg.document else msg.caption.html if msg.caption else ""
 
             reply_markup = msg.reply_markup if DISABLE_BUTTON else None
+
             try:
                 await msg.copy(
-                    chat_id=message.from_user.id,
+                    chat_id=user_id,
                     caption=caption,
                     parse_mode=ParseMode.HTML,
                     protect_content=RESTRICT,
@@ -127,7 +110,7 @@ async def start_command(client: Bot, message: Message):
             except FloodWait as e:
                 await asyncio.sleep(e.x)
                 await msg.copy(
-                    chat_id=message.from_user.id,
+                    chat_id=user_id,
                     caption=caption,
                     parse_mode=ParseMode.HTML,
                     protect_content=RESTRICT,
@@ -141,9 +124,7 @@ async def start_command(client: Bot, message: Message):
             text=START_MESSAGE.format(
                 first=message.from_user.first_name,
                 last=message.from_user.last_name,
-                username=None 
-                if not message.from_user.username
-                else "@" + message.from_user.username,
+                username=f"@{message.from_user.username}" if message.from_user.username else None,
                 mention=message.from_user.mention,
                 id=message.from_user.id,
             ),
@@ -151,8 +132,6 @@ async def start_command(client: Bot, message: Message):
             disable_web_page_preview=True,
             quote=True,
         )
-
-    return
 
 
 @Bot.on_message(filters.command("start") & filters.private)
@@ -162,9 +141,7 @@ async def not_joined(client: Bot, message: Message):
         text=FORCE_MESSAGE.format(
             first=message.from_user.first_name,
             last=message.from_user.last_name,
-            username=f"@{message.from_user.username}"
-            if message.from_user.username
-            else None,
+            username=f"@{message.from_user.username}" if message.from_user.username else None,
             mention=message.from_user.mention,
             id=message.from_user.id,
         ),
@@ -176,52 +153,52 @@ async def not_joined(client: Bot, message: Message):
 
 @Bot.on_message(filters.command(["users", "stats"]) & filters.user(ADMINS))
 async def get_users(client: Bot, message: Message):
-    msg = await client.send_message(
-        chat_id=message.chat.id, text="Sedang diproses..."
-    )
+    msg = await message.reply("Sedang diproses...")
     users = await get_served_users()
-    await msg.edit(f"{len(users)} Pengguna")
+    await msg.edit(f"Total pengguna: {len(users)}")
 
 
 @Bot.on_message(filters.command("broadcast") & filters.user(ADMINS))
 async def send_text(client: Bot, message: Message):
+    from database.mongo import remove_served_user
+
     if message.reply_to_message:
-        anu = message.reply_to_message
-        x = message.reply_to_message.id
-        y = message.chat.id
+        broadcast_msg = message.reply_to_message
+        text_msg = None
     else:
         if len(message.command) < 2:
-            return await message.reply_text(
-                "**Usage**:\n/broadcast [MESSAGE] or [Reply to a Message]"
-            )
-        query = message.text.split(None, 1)[1]
+            return await message.reply_text("Gunakan /broadcast [pesan] atau reply ke pesan.")
+        broadcast_msg = None
+        text_msg = message.text.split(None, 1)[1]
 
-    susr = 0
-    served_users = []
-    ayu = await message.reply("Broadcasting...")
-    susers = await get_served_users()
-    for user in susers:
-       served_users.append(int(user["user_id"]))
-    for i in served_users:
+    users = await get_served_users()
+    count = 0
+    failed = 0
+    status = await message.reply("Broadcast dimulai...")
+
+    sem = asyncio.Semaphore(10)
+
+    async def send(user_id):
+        nonlocal count, failed
         try:
-            await anu.copy(i
-            ) if message.reply_to_message else await client.send_message(
-                i, text=query
-            )
-            susr += 1
+            async with sem:
+                if broadcast_msg:
+                    await broadcast_msg.copy(user_id)
+                else:
+                    await client.send_message(user_id, text=text_msg)
+                count += 1
+                await asyncio.sleep(0.2)
         except FloodWait as e:
-            flood_time = int(e.x)
-            if flood_time > 200:
-                continue
-            await asyncio.sleep(flood_time)
-        except Exception:
-            pass
-    try:
-        await ayu.edit(
-            f"Broadcasted Message to {susr} Users."
-        )
-    except:
-        pass
+            await asyncio.sleep(e.x)
+            await send(user_id)
+        except (UserIsBlocked, InputUserDeactivated):
+            await remove_served_user(user_id)
+            failed += 1
+        except:
+            failed += 1
+
+    await asyncio.gather(*(send(int(user["user_id"])) for user in users))
+    await status.edit(f"Broadcast selesai:\n✔️ Berhasil: {count}\n❌ Gagal: {failed}\n👥 Total: {len(users)}")
 
 
 @Bot.on_message(filters.command("ping"))
@@ -229,9 +206,7 @@ async def ping_pong(client, m: Message):
     start = time()
     m_reply = await m.reply_text("...")
     delta_ping = time() - start
-    await m_reply.edit_text(
-        f"Hasil: {delta_ping * 1000:.3f}ms"
-    )
+    await m_reply.edit_text(f"Pong: {delta_ping * 1000:.3f}ms")
 
 
 @Bot.on_message(filters.command("uptime"))
@@ -239,7 +214,5 @@ async def get_uptime(client, m: Message):
     current_time = datetime.utcnow()
     uptime_sec = (current_time - START_TIME).total_seconds()
     uptime = await _human_time_duration(int(uptime_sec))
-    await m.reply_text(
-        f"Waktu Aktif: {uptime}\n"
-        f"Sejak: {START_TIME_ISO}"
-    )
+    await m.reply_text(f"Waktu Aktif: {uptime}\nSejak: {START_TIME_ISO}")
+    
