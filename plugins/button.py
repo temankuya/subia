@@ -247,11 +247,11 @@ def start_button(client):
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink2
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink3
                 ),
             ],
@@ -278,11 +278,11 @@ def start_button(client):
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink2
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink4
                 ),
             ],
@@ -309,11 +309,11 @@ def start_button(client):
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink3
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink4
                 ),
             ],
@@ -340,15 +340,15 @@ def start_button(client):
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink2
                 ),
                 InlineKeyboardButton(
-                    text="Join 3",
+                    text="•Join Dulu 3",
                     url=client.invitelink3
                 ),
             ],
@@ -375,15 +375,15 @@ def start_button(client):
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink2
                 ),
                 InlineKeyboardButton(
-                    text="Join 3",
+                    text="•Join Dulu 3",
                     url=client.invitelink4
                 ),
             ],
@@ -410,15 +410,15 @@ def start_button(client):
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink3
                 ),
                 InlineKeyboardButton(
-                    text="Join 3",
+                    text="•Join Dulu 3",
                     url=client.invitelink4
                 ),
             ],
@@ -445,15 +445,15 @@ def start_button(client):
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink2
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink3
                 ),
                 InlineKeyboardButton(
-                    text="Join 3",
+                    text="•Join Dulu 3",
                     url=client.invitelink4
                 ),
             ],
@@ -480,21 +480,21 @@ def start_button(client):
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink2
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 3",
+                    text="•Join Dulu 3",
                     url=client.invitelink3
                 ),
                 InlineKeyboardButton(
-                    text="Join 4",
+                    text="•Join Dulu 4",
                     url=client.invitelink4
                 ),
             ],
@@ -518,7 +518,7 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join",
+                    text="•Join Dulu",
                     url=client.invitelink
                 ),
             ],
@@ -544,7 +544,7 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join",
+                    text="•Join Dulu",
                     url=client.invitelink2
                 ),
             ],
@@ -570,7 +570,7 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join",
+                    text="•Join Dulu",
                     url=client.invitelink3
                 ),
             ],
@@ -596,7 +596,7 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join",
+                    text="•Join Dulu",
                     url=client.invitelink4
                 ),
             ],
@@ -622,11 +622,11 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink2
                 ),
             ],
@@ -652,11 +652,11 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink3
                 ),
             ],
@@ -682,11 +682,11 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink4
                 ),
             ],
@@ -712,11 +712,11 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink2
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink3
                 ),
             ],
@@ -742,11 +742,11 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink2
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink4
                 ),
             ],
@@ -772,11 +772,11 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink3
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink4
                 ),
             ],
@@ -802,17 +802,17 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink2
                 ),
                 InlineKeyboardButton(
-                    text="Join 3",
+                    text="•Join Dulu 3",
                     url=client.invitelink3
                 ),
             ],
@@ -838,17 +838,17 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink2
                 ),
                 InlineKeyboardButton(
-                    text="Join 3",
+                    text="•Join Dulu 3",
                     url=client.invitelink4
                 ),
             ],
@@ -874,17 +874,17 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink3
                 ),
                 InlineKeyboardButton(
-                    text="Join 3",
+                    text="•Join Dulu 3",
                     url=client.invitelink4
                 ),
             ],
@@ -910,17 +910,17 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink2
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink3
                 ),
                 InlineKeyboardButton(
-                    text="Join 3",
+                    text="•Join Dulu 3",
                     url=client.invitelink4
                 ),
             ],
@@ -946,21 +946,21 @@ def fsub_button(client, message):
         buttons = [
             [
                 InlineKeyboardButton(
-                    text="Join 1",
+                    text="•Join Dulu 1",
                     url=client.invitelink
                 ),
                 InlineKeyboardButton(
-                    text="Join 2",
+                    text="•Join Dulu 2",
                     url=client.invitelink2
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="Join 3",
+                    text="•Join Dulu 3",
                     url=client.invitelink3
                 ),
                 InlineKeyboardButton(
-                    text="Join 4",
+                    text="•Join Dulu 4",
                     url=client.invitelink4
                 ),
             ],
