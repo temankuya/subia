@@ -6,35 +6,36 @@ from logging.handlers import RotatingFileHandler
 # Load environment variables from config.env
 load_dotenv("config.env")
 
-# Helper function to safely convert strings to boolean
+# Helper: convert string to boolean
 def to_bool(value: str) -> bool:
     return value.strip().lower() in ("true", "1", "yes", "y", "on")
 
-# Helper function to safely convert to int with default fallback
+# Helper: convert string to int with fallback
 def to_int(value: str, default: int = 0) -> int:
     try:
         return int(value)
     except (ValueError, TypeError):
         return default
 
-# Configuration values
-BOT_TOKEN = os.getenv("BOT_TOKEN", "")
+# === ENV CONFIGURATION ===
 
+BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 API_ID = to_int(os.getenv("API_ID", "16460673"))
 API_HASH = os.getenv("API_HASH", "cced480d69646bf00285e8e46b6979a8")
 
-CHANNEL_DB = int(os.getenv("CHANNEL_DB", "-1002885860312"))
-MONGO_URL = os.getenv("MONGO_URL", "mongodb+srv://faslanmuhammed72: mamacantik10@cluster0.t1wlrmd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+CHANNEL_DB = to_int(os.getenv("CHANNEL_DB", "-1002885860312"))
+MONGO_URL = os.getenv("MONGO_URL", "")
 
 RESTRICT = to_bool(os.getenv("RESTRICT", "true"))
 
+# Force subscription channels
 FORCE_SUB_1 = to_int(os.getenv("FORCE_SUB_1", "0"))
 FORCE_SUB_2 = to_int(os.getenv("FORCE_SUB_2", "0"))
 FORCE_SUB_3 = to_int(os.getenv("FORCE_SUB_3", "0"))
-FORCE_SUB_4 = to_int(os.getenv("FORCE_SUB_4", "0"))
 
 WORKERS = to_int(os.getenv("WORKERS", "4"))
 
+# Start message
 START_MESSAGE = os.getenv(
     "START_MESSAGE",
     (
@@ -44,6 +45,7 @@ START_MESSAGE = os.getenv(
     ),
 )
 
+# Force-sub message
 FORCE_MESSAGE = os.getenv(
     "FORCE_MESSAGE",
     (
@@ -53,7 +55,7 @@ FORCE_MESSAGE = os.getenv(
     ),
 )
 
-# ADMINS (expects space-separated user IDs)
+# Admins (space-separated user IDs)
 try:
     ADMINS = [int(x) for x in os.getenv("ADMINS", "5909047294 1642887477 2096354247").split()]
 except ValueError:
@@ -62,7 +64,8 @@ except ValueError:
 CUSTOM_CAPTION = os.getenv("CUSTOM_CAPTION", None)
 DISABLE_BUTTON = to_bool(os.getenv("DISABLE_BUTTON", "false"))
 
-# Logging setup
+# === LOGGING SETUP ===
+
 LOGS_FILE = "logs.txt"
 logging.basicConfig(
     level=logging.INFO,
@@ -74,12 +77,9 @@ logging.basicConfig(
     ],
 )
 
-# Reduce noise from pyrogram logs
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
 
-# Custom logger function
 def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
-# ✅ Tambahkan ini supaya bisa di-import sebagai LOGGER
 LOGGER = get_logger(__name__)
