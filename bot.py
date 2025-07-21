@@ -52,12 +52,10 @@ class Bot(Client):
                     )
                     sys.exit()
 
-        # Cek CHANNEL_DB
-        try:
+try:
     db_channel = await self.get_chat(CHANNEL_DB)
     self.db_channel = db_channel
 
-    # Uji kirim pesan ke channel
     test_message = await self.send_message(
         chat_id=db_channel.id,
         text="✅ Bot Aktif di CHANNEL_DB!"
@@ -73,16 +71,6 @@ class Bot(Client):
 except Exception as e:
     self.LOGGER(__name__).warning(f"❌ Gagal mengakses CHANNEL_DB: {e}")
     self.LOGGER(__name__).warning(
-        f"⚠️ Pastikan bot (@{self.username}) adalah admin di channel dengan ID {CHANNEL_DB}.\n"
-        "Periksa juga apakah channel tersebut benar, tidak private, dan ID-nya valid."
+        f"⚠️ Pastikan bot (@{self.username}) adalah admin di channel dengan ID {CHANNEL_DB}."
     )
     sys.exit()
-
-# Set HTML parsing
-self.set_parse_mode(enums.ParseMode.HTML)
-self.LOGGER(__name__).info("🤖 Bot berhasil diaktifkan.\n")
-
-# Fungsi stop
-async def stop(self, *args):
-    await super().stop()
-    self.LOGGER(__name__).info("🛑 Bot telah berhenti.\n")
