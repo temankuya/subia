@@ -4,15 +4,9 @@ FROM python:3.9-alpine
 # Update & install git
 RUN apk update && apk add --no-cache git
 
-# Clone repo kamu
-RUN git clone https://github.com/temankuya/subia /app
-
-# Set workdir ke folder project
+# Set workdir dan copy file lokal ke container
 WORKDIR /app
-
-# Optional: Set git config (bisa dihapus kalau tidak perlu)
-RUN git config --global user.name "subia"
-RUN git config --global user.email "subia@e.mail"
+COPY . /app
 
 # Supaya pip tidak warning
 ENV PIP_ROOT_USER_ACTION=ignore
@@ -21,5 +15,5 @@ ENV PIP_ROOT_USER_ACTION=ignore
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
-# Jalankan main.py (pastikan ini file utama)
+# Jalankan main.py
 CMD ["python", "main.py"]
