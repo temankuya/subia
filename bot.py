@@ -56,17 +56,26 @@ class Bot(Client):
         try:
             db_channel = await self.get_chat(CHANNEL_DB)
             self.db_channel = db_channel
-            test_msg = await self.send_message(db_channel.id, "Bot Aktif!")
-            await test_msg.delete()
-            self.LOGGER.info(f"CHANNEL_DB terdeteksi: {db_channel.title} ({db_channel.id})")
+            test = await self.send_message(chat_id=db_channel.id, text="Bot Aktif!\n\n")
+            await test.delete()
+            self.LOGGER(__name__).info(
+                "CHANNEL_DB Detected!\n"
+                f"  Title: {db_channel.title}\n"
+                f"  Chat ID: {db_channel.id}\n\n"
+            )
         except Exception as e:
-            self.LOGGER.warning(e)
-            self.LOGGER.warning(f"Pastikan @{self.username} menjadi Admin di CHANNEL_DB")
+            self.LOGGER(__name__).warning(e)
+            self.LOGGER(__name__).warning(
+                f"Pastikan @{self.username} "
+                "menjadi Admin di CHANNEL_DB\n\n"
+            )
             sys.exit()
 
         self.set_parse_mode(enums.ParseMode.HTML)
-        self.LOGGER.info("Bot Aktif!\n\n")
+        self.LOGGER(__name__).info(
+            "Bot Aktif!\n\n"
+        )
 
     async def stop(self, *args):
         await super().stop()
-        self.LOGGER.info("Bot Berhenti!\n\n")
+        self.LOGGER(__name__).info("Bot Berhenti!\n\n")
