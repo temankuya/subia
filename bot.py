@@ -10,7 +10,7 @@ from config import (
     FORCE_SUB_4,
     BOT_TOKEN,
     WORKERS,
-    get_logger,  # perbaikan: ambil fungsi get_logger
+    get_logger,
 )
 
 
@@ -24,7 +24,7 @@ class Bot(Client):
             workers=WORKERS,
             plugins={"root": "plugins"},
         )
-        self.LOGGER = get_logger(__name__)  # gunakan fungsi get_logger
+        self.LOGGER = get_logger(__name__)
 
     async def start(self):
         try:
@@ -52,25 +52,26 @@ class Bot(Client):
                     )
                     sys.exit()
 
-try:
-    db_channel = await self.get_chat(CHANNEL_DB)
-    self.db_channel = db_channel
+        # ✅ Cek CHANNEL_DB
+        try:
+            db_channel = await self.get_chat(CHANNEL_DB)
+            self.db_channel = db_channel
 
-    test_message = await self.send_message(
-        chat_id=db_channel.id,
-        text="✅ Bot Aktif di CHANNEL_DB!"
-    )
-    await test_message.delete()
+            test_message = await self.send_message(
+                chat_id=db_channel.id,
+                text="✅ Bot Aktif di CHANNEL_DB!"
+            )
+            await test_message.delete()
 
-    self.LOGGER(__name__).info(
-        f"✅ CHANNEL_DB terdeteksi!\n"
-        f"📌 Nama Channel: {db_channel.title}\n"
-        f"🆔 Chat ID: {db_channel.id}\n"
-    )
+            self.LOGGER.info(
+                f"✅ CHANNEL_DB terdeteksi!\n"
+                f"📌 Nama Channel: {db_channel.title}\n"
+                f"🆔 Chat ID: {db_channel.id}\n"
+            )
 
-except Exception as e:
-    self.LOGGER(__name__).warning(f"❌ Gagal mengakses CHANNEL_DB: {e}")
-    self.LOGGER(__name__).warning(
-        f"⚠️ Pastikan bot (@{self.username}) adalah admin di channel dengan ID {CHANNEL_DB}."
-    )
-    sys.exit()
+        except Exception as e:
+            self.LOGGER.warning(f"❌ Gagal mengakses CHANNEL_DB: {e}")
+            self.LOGGER.warning(
+                f"⚠️ Pastikan bot (@{self.username}) adalah admin di channel dengan ID {CHANNEL_DB}."
+            )
+            sys.exit()
