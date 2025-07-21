@@ -7,7 +7,6 @@ from config import (
     FORCE_SUB_1,
     FORCE_SUB_2,
     FORCE_SUB_3,
-    FORCE_SUB_4,
     BOT_TOKEN,
     WORKERS,
     get_logger,
@@ -32,27 +31,28 @@ class Bot(Client):
             me = await self.get_me()
             self.username = me.username
             self.namebot = me.first_name
-            self.LOGGER.info(f"BOT_TOKEN terdeteksi! Username: @{self.username}")
+            self.LOGGER.info(f"🤖 BOT_TOKEN terdeteksi! Username: @{self.username}")
         except Exception as e:
-            self.LOGGER.warning(e)
+            self.LOGGER.warning(f"Gagal start bot: {e}")
             sys.exit()
 
-        # Cek semua FORCE_SUB
-        for i, chat_id in enumerate([FORCE_SUB_1, FORCE_SUB_2, FORCE_SUB_3, FORCE_SUB_4], start=1):
+        # 🚪 Cek semua channel FORCE_SUB (maksimal 3)
+        force_sub_channels = [FORCE_SUB_1, FORCE_SUB_2, FORCE_SUB_3]
+        for i, chat_id in enumerate(force_sub_channels, start=1):
             if chat_id:
                 try:
                     info = await self.get_chat(chat_id)
                     link = info.invite_link or await self.export_chat_invite_link(chat_id)
                     setattr(self, f"invitelink{i}", link)
-                    self.LOGGER.info(f"FORCE_SUB_{i} terdeteksi: {info.title} ({info.id})")
+                    self.LOGGER.info(f"🔒 FORCE_SUB_{i} terdeteksi: {info.title} ({info.id})")
                 except Exception as e:
-                    self.LOGGER.warning(e)
+                    self.LOGGER.warning(f"⚠️ Tidak bisa mengakses FORCE_SUB_{i}: {e}")
                     self.LOGGER.warning(
-                        f"Pastikan @{self.username} menjadi Admin di FORCE_SUB_{i}"
+                        f"Pastikan bot (@{self.username}) adalah admin di channel {chat_id}"
                     )
                     sys.exit()
 
-        # ✅ Cek CHANNEL_DB
+        # 🗃️ Cek CHANNEL_DB
         try:
             db_channel = await self.get_chat(CHANNEL_DB)
             self.db_channel = db_channel
