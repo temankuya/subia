@@ -1,18 +1,19 @@
-# SET BASE IMAGE OS
-FROM python:3.9-alpine
+ #hm
+FROM python:3.11-slim
 
-# Update & install git
-RUN apk update && apk add --no-cache git
-
-# Set workdir dan copy file lokal ke container
+# Set workdir
 WORKDIR /app
-COPY . /app
 
-# Supaya pip tidak warning
-ENV PIP_ROOT_USER_ACTION=ignore
+# Install dependencies system (agar psycopg2, motor, dll bisa di-compile)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git gcc g++ libpq-dev python3-dev build-essential ffmpeg \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Update pip dan install dependencies
-RUN pip install --upgrade pip \
+# Salin semua file ke container
+COPY . .
+
+# Upgrade pip dan install dependencies Python
+RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
 # Jalankan main.py
