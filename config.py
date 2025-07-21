@@ -25,10 +25,10 @@ def to_int(value: str, default: int = 0) -> int:
 # Configuration values
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 
-API_ID = to_int(os.getenv("API_ID", "26761588"))
-API_HASH = os.getenv("API_HASH", "571e5055f862124a27d08beb6e5f6e2a")
+API_ID = to_int(os.getenv("API_ID", ""))
+API_HASH = os.getenv("API_HASH", "")
 
-CHANNEL_DB = to_int(os.getenv("CHANNEL_DB", "-1002429463776"))
+CHANNEL_DB = to_int(os.getenv("CHANNEL_DB", ""))
 MONGO_URL = os.getenv("MONGO_URL", "")
 
 RESTRICT = to_bool(os.getenv("RESTRICT", "true"))
