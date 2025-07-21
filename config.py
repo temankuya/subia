@@ -23,7 +23,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 API_ID = to_int(os.getenv("API_ID", "16460673"))
 API_HASH = os.getenv("API_HASH", "cced480d69646bf00285e8e46b6979a8")
 
-CHANNEL_DB = to_int(os.getenv("CHANNEL_DB", "-1002429463776"))
+CHANNEL_DB = to_int(os.getenv("CHANNEL_DB", ""))
 MONGO_URL = os.getenv("MONGO_URL", "mongodb+srv://faslanmuhammed72: mamacantik10@cluster0.t1wlrmd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
 RESTRICT = to_bool(os.getenv("RESTRICT", "true"))
