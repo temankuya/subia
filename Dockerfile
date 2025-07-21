@@ -1,29 +1,25 @@
 # SET BASE IMAGE OS
 FROM python:3.9-alpine
 
-# UPDATE AND INSTALL GIT
+# Update & install git
 RUN apk update && apk add --no-cache git
 
-# CLONE REPOSITORY DARI GITHUB BARU
-RUN git clone \
-    https://github.com/temankuya/subia \
-    /home/subia && chmod -R 777 /home/subia
+# Clone repo kamu
+RUN git clone https://github.com/temankuya/subia /app
 
-# SET WORKDIR
-WORKDIR /home/subia
+# Set workdir ke folder project
+WORKDIR /app
 
-# SET GIT CONFIG (opsional, bisa dihapus kalau nggak perlu)
+# Optional: Set git config (bisa dihapus kalau tidak perlu)
 RUN git config --global user.name "subia"
 RUN git config --global user.email "subia@e.mail"
 
-# IGNORE PIP WARNING 
+# Supaya pip tidak warning
 ENV PIP_ROOT_USER_ACTION=ignore
 
-# UPDATE PIP
-RUN pip install -U pip
+# Update pip dan install dependencies
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
-# INSTALL REQUIREMENTS
-RUN pip install -U --no-cache-dir -r requirements.txt
-
-# COMMAND TO RUN
+# Jalankan main.py (pastikan ini file utama)
 CMD ["python", "main.py"]
