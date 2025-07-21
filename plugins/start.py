@@ -13,7 +13,7 @@ from config import (
     RESTRICT,
     START_MESSAGE,
 )
-from database.mongo import add_served_user, get_served_users, remove_served_user
+from database.mongo import add_served_user, get_served_users
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked
