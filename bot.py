@@ -8,9 +8,9 @@ from config import (
     FORCE_SUB_2,
     FORCE_SUB_3,
     FORCE_SUB_4,
-    LOGGER,
     BOT_TOKEN,
     WORKERS,
+    get_logger,  # perbaikan: ambil fungsi get_logger
 )
 
 
@@ -24,7 +24,7 @@ class Bot(Client):
             workers=WORKERS,
             plugins={"root": "plugins"},
         )
-        self.LOGGER = LOGGER(__name__)  # fix: use single instance
+        self.LOGGER = get_logger(__name__)  # gunakan fungsi get_logger
 
     async def start(self):
         try:
@@ -32,7 +32,7 @@ class Bot(Client):
             me = await self.get_me()
             self.username = me.username
             self.namebot = me.first_name
-            self.LOGGER.info(f"BOT_TOKEN detected! Username: @{self.username}")
+            self.LOGGER.info(f"BOT_TOKEN terdeteksi! Username: @{self.username}")
         except Exception as e:
             self.LOGGER.warning(e)
             sys.exit()
@@ -44,7 +44,7 @@ class Bot(Client):
                     info = await self.get_chat(chat_id)
                     link = info.invite_link or await self.export_chat_invite_link(chat_id)
                     setattr(self, f"invitelink{i}", link)
-                    self.LOGGER.info(f"FORCE_SUB_{i} Detected: {info.title} ({info.id})")
+                    self.LOGGER.info(f"FORCE_SUB_{i} terdeteksi: {info.title} ({info.id})")
                 except Exception as e:
                     self.LOGGER.warning(e)
                     self.LOGGER.warning(
@@ -58,7 +58,7 @@ class Bot(Client):
             self.db_channel = db_channel
             test_msg = await self.send_message(db_channel.id, "Bot Aktif!")
             await test_msg.delete()
-            self.LOGGER.info(f"CHANNEL_DB Detected: {db_channel.title} ({db_channel.id})")
+            self.LOGGER.info(f"CHANNEL_DB terdeteksi: {db_channel.title} ({db_channel.id})")
         except Exception as e:
             self.LOGGER.warning(e)
             self.LOGGER.warning(f"Pastikan @{self.username} menjadi Admin di CHANNEL_DB")
