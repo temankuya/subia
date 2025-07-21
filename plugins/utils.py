@@ -13,7 +13,6 @@ from config import (
     FORCE_SUB_1,
     FORCE_SUB_2,
     FORCE_SUB_3,
-    FORCE_SUB_4,
     LOGGER,
     RESTRICT,
     START_MESSAGE,
@@ -56,7 +55,6 @@ RESTRICT = <code>{RESTRICT}</code>
 FORCE_SUB_1 = <code>{FORCE_SUB_1}</code>
 FORCE_SUB_2 = <code>{FORCE_SUB_2}</code>
 FORCE_SUB_3 = <code>{FORCE_SUB_3}</code>
-FORCE_SUB_4 = <code>{FORCE_SUB_4}</code>
 START_MESSAGE = <code>{START_MESSAGE}</code>
 FORCE_MESSAGE = <code>{FORCE_MESSAGE}</code>
 """
