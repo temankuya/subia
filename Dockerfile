@@ -2,20 +2,19 @@
 FROM python:3.9-alpine
 
 # UPDATE AND INSTALL GIT
-RUN apk update
-RUN apk add --no-cache git
+RUN apk update && apk add --no-cache git
 
-# CLONE REPOSITORY
+# CLONE REPOSITORY DARI GITHUB BARU
 RUN git clone \
-    https://github.com/tracemoepy/Fsub-Dark \
-    /home/fsub ; chmod 777 /home/fsub
+    https://github.com/temankuya/subia \
+    /home/subia && chmod -R 777 /home/subia
 
-# WORKDIR
-WORKDIR /home/fsub
+# SET WORKDIR
+WORKDIR /home/subia
 
-# SET GIT CONFIG
-RUN git config --global user.name "fsub"
-RUN git config --global user.email "fsub@e.mail"
+# SET GIT CONFIG (opsional, bisa dihapus kalau nggak perlu)
+RUN git config --global user.name "subia"
+RUN git config --global user.email "subia@e.mail"
 
 # IGNORE PIP WARNING 
 ENV PIP_ROOT_USER_ACTION=ignore
@@ -24,9 +23,7 @@ ENV PIP_ROOT_USER_ACTION=ignore
 RUN pip install -U pip
 
 # INSTALL REQUIREMENTS
-RUN pip install -U \
-                --no-cache-dir \
-                -r requirements.txt
+RUN pip install -U --no-cache-dir -r requirements.txt
 
 # COMMAND TO RUN
 CMD ["python", "main.py"]
