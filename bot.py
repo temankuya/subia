@@ -54,28 +54,35 @@ class Bot(Client):
 
         # Cek CHANNEL_DB
         try:
-            db_channel = await self.get_chat(CHANNEL_DB)
-            self.db_channel = db_channel
-            test = await self.send_message(chat_id=db_channel.id, text="Bot Aktif!\n\n")
-            await test.delete()
-            self.LOGGER(__name__).info(
-                "CHANNEL_DB Detected!\n"
-                f"  Title: {db_channel.title}\n"
-                f"  Chat ID: {db_channel.id}\n\n"
-            )
-        except Exception as e:
-            self.LOGGER(__name__).warning(e)
-            self.LOGGER(__name__).warning(
-                f"Pastikan @{self.username} "
-                "menjadi Admin di CHANNEL_DB\n\n"
-            )
-            sys.exit()
+    db_channel = await self.get_chat(CHANNEL_DB)
+    self.db_channel = db_channel
 
-        self.set_parse_mode(enums.ParseMode.HTML)
-        self.LOGGER(__name__).info(
-            "Bot Aktif!\n\n"
-        )
+    # Uji kirim pesan ke channel
+    test_message = await self.send_message(
+        chat_id=db_channel.id,
+        text="✅ Bot Aktif di CHANNEL_DB!"
+    )
+    await test_message.delete()
 
-    async def stop(self, *args):
-        await super().stop()
-        self.LOGGER(__name__).info("Bot Berhenti!\n\n")
+    self.LOGGER(__name__).info(
+        f"✅ CHANNEL_DB terdeteksi!\n"
+        f"📌 Nama Channel: {db_channel.title}\n"
+        f"🆔 Chat ID: {db_channel.id}\n"
+    )
+
+except Exception as e:
+    self.LOGGER(__name__).warning(f"❌ Gagal mengakses CHANNEL_DB: {e}")
+    self.LOGGER(__name__).warning(
+        f"⚠️ Pastikan bot (@{self.username}) adalah admin di channel dengan ID {CHANNEL_DB}.\n"
+        "Periksa juga apakah channel tersebut benar, tidak private, dan ID-nya valid."
+    )
+    sys.exit()
+
+# Set HTML parsing
+self.set_parse_mode(enums.ParseMode.HTML)
+self.LOGGER(__name__).info("🤖 Bot berhasil diaktifkan.\n")
+
+# Fungsi stop
+async def stop(self, *args):
+    await super().stop()
+    self.LOGGER(__name__).info("🛑 Bot telah berhenti.\n")
