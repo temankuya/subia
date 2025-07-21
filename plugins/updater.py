@@ -4,74 +4,86 @@ import os
 import sys
 from os import environ, execle, system
 
-from bot import Bot
 from git import Repo
 from git.exc import InvalidGitRepositoryError
-from pyrogram import Client, filters
+from pyrogram import filters
 from pyrogram.types import Message
 
+from bot import Bot
 from config import ADMINS, LOGGER
 
 
-def gen_chlog(repo, diff):
-    up_repo = Repo().remotes[0].config_reader.get("url").replace(".git", "")
+def get_remote(repo):
+    for remote_name in ["upstream", "origin"]:
+        try:
+            remote = repo.remotes[remote_name]
+            url = remote.config_reader.get("url")
+            return remote_name, url.rstrip(".git")
+        except Exception:
+            continue
+    return None, None
+
+
+def gen_chlog(repo, diff, up_repo):
     ac_br = repo.active_branch.name
     ch_log = ""
     tldr_log = ""
-    ch = f"Update for <a href={up_repo}/tree/{ac_br}>[{ac_br}]</a>:"
-    ch_tl = f"Updates for {ac_br}:"
+    ch = f"Update untuk <a href={up_repo}/tree/{ac_br}>[{ac_br}]</a>:"
+    ch_tl = f"Updates untuk {ac_br}:"
     d_form = "%d/%m/%y | %H:%M"
-    for c in repo.iter_commits(diff):
+    for i, c in enumerate(repo.iter_commits(diff), start=1):
         ch_log += (
-            f"\n{c.count()} [{c.committed_datetime.strftime(d_form)}]\n"
-            f"<a href={up_repo.rstrip('/')}/commit/{c}>[{c.summary}]</a> {c.author}"
+            f"\n{i}. [{c.committed_datetime.strftime(d_form)}]\n"
+            f"<a href={up_repo.rstrip('/')}/commit/{c.hexsha}>[{c.summary}]</a> — {c.author}"
         )
-        tldr_log += f"\n{c.count()} [{c.committed_datetime.strftime(d_form)}]\n[{c.summary}] {c.author}"
+        tldr_log += f"\n{i}. [{c.committed_datetime.strftime(d_form)}]\n[{c.summary}] — {c.author}"
     if ch_log:
         return str(ch + ch_log), str(ch_tl + tldr_log)
-    return ch_log, tldr_log
+    return "", ""
 
 
 def updater():
     try:
         repo = Repo()
     except InvalidGitRepositoryError:
-        repo = Repo.init()
-        origin = repo.create_remote("upstream", UPSTREAM)
-        origin.fetch()
-        repo.create_head("master", origin.refs.master)
-        repo.heads.master.set_tracking_branch(origin.refs.master)
-        repo.heads.master.checkout(True)
+        return False, "", ""
+
+    remote_name, remote_url = get_remote(repo)
+    if not remote_name:
+        return False, "", ""
+
     ac_br = repo.active_branch.name
-    if "upstream" in repo.remotes:
-        ups_rem = repo.remote("upstream")
-    else:
-        ups_rem = repo.create_remote("upstream", UPSTREAM)
-    ups_rem.fetch(ac_br)
-    changelog, tl_chnglog = gen_chlog(repo, f"HEAD..upstream/{ac_br}")
-    return bool(changelog)
+    diff_range = f"HEAD..{remote_name}/{ac_br}"
+    repo.remotes[remote_name].fetch(ac_br)
+    changelog, tldr = gen_chlog(repo, diff_range, remote_url)
+    return bool(changelog), changelog, tldr
 
 
 @Bot.on_message(filters.command("update") & filters.user(ADMINS))
 async def update_bot(_, message: Message):
-    message.chat.id
-    msg = await message.reply_text("...")
-    update_avail = updater()
-    if update_avail:
-        await msg.edit("Updated!")
-        system("git reset && git pull --rebase -f && pip3 install --no-cache-dir -r requirements.txt")
-        execle(sys.executable, sys.executable, "main.py", environ)
-        return
-    await msg.edit("Updated!")
+    msg = await message.reply_text("🔄 Mengecek update...")
+    has_update, changelog, _ = updater()
+
+    if not has_update:
+        return await msg.edit("✅ Bot sudah versi terbaru.")
+
+    await msg.edit(f"🔔 Pembaruan Tersedia!\n{changelog}\n\nMengupdate...")
+
+    try:
+        system("git reset --hard")
+        system("git pull --rebase -f")
+        system("pip3 install --no-cache-dir -r requirements.txt")
+    except Exception as e:
+        return await msg.edit(f"❌ Gagal saat update: {e}")
+
+    await msg.edit("✅ Update berhasil! Bot akan restart...")
+    LOGGER(__name__).info("Bot updated via /update command.")
+    execle(sys.executable, sys.executable, "main.py", environ)
 
 
 @Bot.on_message(filters.command("restart") & filters.user(ADMINS))
 async def restart_bot(_, message: Message):
-    try:
-        msg = await message.reply_text("...")
-        LOGGER(__name__).info("Bot Restarted!")
-    except BaseException as err:
-        LOGGER(__name__).info(f"{err}")
-        return
-    await msg.edit_text("Bot Restarted!")
-    os.system(f"kill -9 {os.getpid()} && python main.py")
+    msg = await message.reply_text("🔁 Merestart bot...")
+    LOGGER(__name__).info("Bot restarting via /restart command.")
+    await msg.edit("♻️ Restarting...")
+    os.execle(sys.executable, sys.executable, "main.py", environ)
