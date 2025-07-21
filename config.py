@@ -1,5 +1,3 @@
-# Codexbotz # @mrismanaziz
-
 import logging
 import os
 from dotenv import load_dotenv
@@ -8,11 +6,9 @@ from logging.handlers import RotatingFileHandler
 # Load environment variables from config.env
 load_dotenv("config.env")
 
-
 # Helper function to safely convert strings to boolean
 def to_bool(value: str) -> bool:
     return value.strip().lower() in ("true", "1", "yes", "y", "on")
-
 
 # Helper function to safely convert to int with default fallback
 def to_int(value: str, default: int = 0) -> int:
@@ -20,7 +16,6 @@ def to_int(value: str, default: int = 0) -> int:
         return int(value)
     except (ValueError, TypeError):
         return default
-
 
 # Configuration values
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
@@ -67,7 +62,6 @@ except ValueError:
 CUSTOM_CAPTION = os.getenv("CUSTOM_CAPTION", None)
 DISABLE_BUTTON = to_bool(os.getenv("DISABLE_BUTTON", "false"))
 
-
 # Logging setup
 LOGS_FILE = "logs.txt"
 logging.basicConfig(
@@ -83,7 +77,9 @@ logging.basicConfig(
 # Reduce noise from pyrogram logs
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
 
-
 # Custom logger function
 def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)
+
+# ✅ Tambahkan ini supaya bisa di-import sebagai LOGGER
+LOGGER = get_logger(__name__)
