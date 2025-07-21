@@ -55,33 +55,46 @@ async def _human_time_duration(seconds):
 
 @Bot.on_message(filters.command("start") & filters.private & subs & sub1 & sub2 & sub3 & sub4)
 async def start_command(client: Bot, message: Message):
-    user_id = message.from_user.id
+    id = message.from_user.id
+    user_name = (
+        f"@{message.from_user.username}"
+        if message.from_user.username
+        else None
+    )
 
     try:
-        await add_served_user(user_id)
+        await add_served_user(id)
     except:
         pass
-
-    if len(message.text) > 7:
+    text = message.text
+    if len(text) > 7:
         try:
-            base64_string = message.text.split(" ", 1)[1]
-            string = await decode(base64_string)
-            argument = string.split("-")
+            base64_string = text.split(" ", 1)[1]
         except BaseException:
             return
-
-        try:
-            if len(argument) == 3:
+        string = await decode(base64_string)
+        argument = string.split("-")
+        if len(argument) == 3:
+            try:
                 start = int(int(argument[1]) / abs(client.db_channel.id))
                 end = int(int(argument[2]) / abs(client.db_channel.id))
-                ids = list(range(start, end + 1)) if start <= end else list(range(start, end - 1, -1))
-            elif len(argument) == 2:
-                ids = [int(int(argument[1]) / abs(client.db_channel.id))]
+            except BaseException:
+                return
+            if start <= end:
+                ids = range(start, end + 1)
             else:
                 ids = []
-        except BaseException:
-            return
-
+                i = start
+                while True:
+                    ids.append(i)
+                    i -= 1
+                    if i < end:
+                        break
+        elif len(argument) == 2:
+            try:
+                ids = [int(int(argument[1]) / abs(client.db_channel.id))]
+            except BaseException:
+                return
         temp_msg = await message.reply("Sedang diproses...")
         try:
             messages = await get_messages(client, ids)
@@ -91,16 +104,20 @@ async def start_command(client: Bot, message: Message):
         await temp_msg.delete()
 
         for msg in messages:
-            caption = CUSTOM_CAPTION.format(
-                previouscaption=msg.caption.html if msg.caption else "",
-                filename=msg.document.file_name,
-            ) if CUSTOM_CAPTION and msg.document else msg.caption.html if msg.caption else ""
+
+            if bool(CUSTOM_CAPTION) & bool(msg.document):
+                caption = CUSTOM_CAPTION.format(
+                    previouscaption=msg.caption.html if msg.caption else "",
+                    filename=msg.document.file_name,
+                )
+
+            else:
+                caption = msg.caption.html if msg.caption else ""
 
             reply_markup = msg.reply_markup if DISABLE_BUTTON else None
-
             try:
                 await msg.copy(
-                    chat_id=user_id,
+                    chat_id=message.from_user.id,
                     caption=caption,
                     parse_mode=ParseMode.HTML,
                     protect_content=RESTRICT,
@@ -110,7 +127,7 @@ async def start_command(client: Bot, message: Message):
             except FloodWait as e:
                 await asyncio.sleep(e.x)
                 await msg.copy(
-                    chat_id=user_id,
+                    chat_id=message.from_user.id,
                     caption=caption,
                     parse_mode=ParseMode.HTML,
                     protect_content=RESTRICT,
@@ -124,7 +141,9 @@ async def start_command(client: Bot, message: Message):
             text=START_MESSAGE.format(
                 first=message.from_user.first_name,
                 last=message.from_user.last_name,
-                username=f"@{message.from_user.username}" if message.from_user.username else None,
+                username=None 
+                if not message.from_user.username
+                else "@" + message.from_user.username,
                 mention=message.from_user.mention,
                 id=message.from_user.id,
             ),
@@ -132,6 +151,8 @@ async def start_command(client: Bot, message: Message):
             disable_web_page_preview=True,
             quote=True,
         )
+
+    return
 
 
 @Bot.on_message(filters.command("start") & filters.private)
